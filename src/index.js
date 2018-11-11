@@ -4,12 +4,7 @@ import './index.css';
 
 function Square(props) {
     return (
-        <button
-            className="square"
-            onClick={props.onClick}
-        >
-            {props.value}
-        </button>
+        <button className="square" onClick={props.onClick}>{props.value}</button>
     );
 }
 
@@ -98,12 +93,17 @@ class Game extends React.Component {
             if (this.state.stepNumber === 0) {
                 return; // display nothing if game just started
             }
+            console.log(step, move);
 
-            return (
-                <li key={move}>
+            let historyElement = '';
+
+            if (move > 0) {
+                historyElement = <li key={move}>
                     <button onClick={() => this.jumpTo(move)}>{desc}</button>
-                </li>
-            );
+                </li>;
+            }
+
+            return historyElement;
         });
 
         let status;
@@ -116,16 +116,25 @@ class Game extends React.Component {
 
         return (
             <div className="game">
+                <h1 className="page-title">The tic-tac-toe game</h1>
                 <div className="game-board">
                     <Board
                         squares={current.squares}
                         onClick={(i) => this.handleClick(i)}
                     />
                 </div>
-                <div className="game-info">
-                    <div>{status}</div>
-                    <ol>{moves}</ol>
-                </div>
+                <div className="game-status">{status}</div>
+                {this.state.stepNumber > 0 &&
+                    <div className="game-restart">
+                        <button onClick={() => this.jumpTo(0)}>Restart game</button>
+                    </div>
+                }
+                {this.state.stepNumber > 0 &&
+                    <div className="game-history">
+                        <h5>Moves history</h5>
+                        <ol>{moves}</ol>
+                    </div>
+                }
             </div>
         );
     };
@@ -137,7 +146,7 @@ ReactDom.render(
 );
 
 function calculateWinner(squares) {
-    const lines = [
+    const lines = [ // winning combinations
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],

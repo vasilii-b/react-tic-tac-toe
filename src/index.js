@@ -80,6 +80,12 @@ class Game extends React.Component {
             stepNumber: step,
             xIsNext: (step % 2) === 0,
         });
+
+        if (step === 0) { // reset history
+            this.setState({
+                history: this.state.history.slice(0, 1),
+            });
+        }
     };
 
     render() {
@@ -88,6 +94,10 @@ class Game extends React.Component {
         const winner = calculateWinner(current.squares);
         const moves = history.map((step, move) => {
             const desc = move ? 'Go to move #' + move : 'Restart game';
+
+            if (this.state.stepNumber === 0) {
+                return; // display nothing if game just started
+            }
 
             return (
                 <li key={move}>
